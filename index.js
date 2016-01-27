@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch'
 import qs from 'qs'
 
-const mapzenUrl = 'https://search.mapzen.com/v1'
-const searchUrl = `${mapzenUrl}/search`
-const reverseUrl = `${mapzenUrl}/reverse`
+const mapzen_url = 'https://search.mapzen.com/v1'
+const search_url = `${mapzen_url}/search`
+const reverse_url = `${mapzen_url}/reverse`
 
 export function search (api_key, text, {boundary, focus_latlng, format} = {}) {
   if (!text) return Promise.resolve([])
@@ -33,34 +33,28 @@ export function search (api_key, text, {boundary, focus_latlng, format} = {}) {
     }
   }
 
-  return fetch(`${searchUrl}?${qs.stringify(query)}`)
-    .then(res => res.json())
-    .then(json => {
-      if (!json || !json.features) throw new Error('No features found.')
-
-      return format ? json.features.map(split) : json
-    })
+  return run(search_url, query, format)
 }
 
 export function reverse (api_key, latlng, {format} = {}) {
-  const query = qs.stringify({
+  return run(reverse_url, {
     api_key,
     'point.lat': latlng.lat,
     'point.lon': latlng.lng
-  })
+  }, format)
+}
 
-  return fetch(`${reverseUrl}?${query}`)
+function run (url, query, format) {
+  return fetch(`${url}?${qs.stringify(query)}`)
     .then(res => res.json())
     .then(json => {
-      if (!json || !json.features) throw new Error('No features found.')
-
-      return format ? json.features.map(split) : json
+      return json && json.features && format ? json.features.map(split) : json
     })
 }
 
 function split ({geometry, properties}) {
   return Object.assign({}, properties, {
-    fullAddress: properties.label,
+    address: properties.label,
     latlng: {
       lat: parseFloat(geometry.coordinates[1]),
       lng: parseFloat(geometry.coordinates[0])
