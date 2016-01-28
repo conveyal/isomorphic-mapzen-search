@@ -1,5 +1,5 @@
 # isomorphic-mapzen-search
-Isomorphic Mapzen search for reuse across our JavaScript libraries. Get an API key [here](https://mapzen.com/developers).
+Isomorphic Mapzen search for reuse across our JavaScript libraries. Get an API key [here](https://mapzen.com/developers). Coordinates must be anything that can be parsed by [lonlng](https://github.com/conveyal/lonlng).
 
 ## API
 
