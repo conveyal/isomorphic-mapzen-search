@@ -1,6 +1,6 @@
 {
   "name": "isomorphic-mapzen-search",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Isomorphic Mapzen search for reuse across our libraries.",
   "main": "./build/index",
   "babel": {
@@ -24,6 +24,7 @@
   "homepage": "https://github.com/conveyal/isomorphic-mapzen-search",
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
+    "lonlng": "0.0.1",
     "qs": "^6.0.2"
   },
   "devDependencies": {

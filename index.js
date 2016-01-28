@@ -1,11 +1,12 @@
 import fetch from 'isomorphic-fetch'
+import lonlng from 'lonlng'
 import qs from 'qs'
 
 const mapzen_url = 'https://search.mapzen.com/v1'
 const search_url = `${mapzen_url}/search`
 const reverse_url = `${mapzen_url}/reverse`
 
-export function search (api_key, text, {boundary, focus_latlng, format} = {}) {
+export function search (api_key, text, {boundary, focusLatlng, format} = {}) {
   if (!text) return Promise.resolve([])
 
   const query = {
@@ -13,22 +14,26 @@ export function search (api_key, text, {boundary, focus_latlng, format} = {}) {
     text
   }
 
-  if (focus_latlng) {
-    query['focus.point.lat'] = focus_latlng.lat
-    query['focus.point.lon'] = focus_latlng.lng
+  if (focusLatlng) {
+    const {lat, lng} = lonlng(focusLatlng)
+    query['focus.point.lat'] = lat
+    query['focus.point.lon'] = lng
   }
 
   if (boundary) {
     if (boundary.country) query['boundary.country'] = boundary.country
     if (boundary.rect) {
-      query['boundary.rect.min_lat'] = boundary.rect.min_lat
-      query['boundary.rect.min_lon'] = boundary.rect.min_lon
-      query['boundary.rect.max_lat'] = boundary.rect.max_lat
-      query['boundary.rect.max_lon'] = boundary.rect.max_lon
+      const min = lonlng(boundary.rect.minLatlng)
+      const max = lonlng(boundary.rect.maxLatlng)
+      query['boundary.rect.min_lat'] = min.lat
+      query['boundary.rect.min_lon'] = min.lng
+      query['boundary.rect.max_lat'] = max.lat
+      query['boundary.rect.max_lon'] = max.lng
     }
     if (boundary.circle) {
-      query['boundary.circle.lat'] = boundary.circle.lat
-      query['boundary.circle.lon'] = boundary.circle.lon
+      const {lat, lng} = lonlng(boundary.circle.latlng)
+      query['boundary.circle.lat'] = lat
+      query['boundary.circle.lon'] = lng
       query['boundary.circle.radius'] = boundary.circle.radius
     }
   }
@@ -37,27 +42,23 @@ export function search (api_key, text, {boundary, focus_latlng, format} = {}) {
 }
 
 export function reverse (api_key, latlng, {format} = {}) {
+  const {lng, lat} = lonlng(latlng)
   return run(reverse_url, {
     api_key,
-    'point.lat': latlng.lat,
-    'point.lon': latlng.lng
+    'point.lat': lat,
+    'point.lon': lng
   }, format)
 }
 
 function run (url, query, format) {
   return fetch(`${url}?${qs.stringify(query)}`)
     .then(res => res.json())
-    .then(json => {
-      return json && json.features && format ? json.features.map(split) : json
-    })
+    .then(json => { return json && json.features && format ? json.features.map(split) : json })
 }
 
 function split ({geometry, properties}) {
   return Object.assign({}, properties, {
     address: properties.label,
-    latlng: {
-      lat: parseFloat(geometry.coordinates[1]),
-      lng: parseFloat(geometry.coordinates[0])
-    }
+    latlng: lonlng.fromCoordinates(geometry.coordinates)
   })
 }

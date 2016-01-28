@@ -3,15 +3,21 @@ Isomorphic Mapzen search for reuse across our JavaScript libraries. Get an API k
 
 ## API
 
-### `search(api_key, search_text, options = {})`
+### `search(apiKey, searchText, options = {})`
 
 ```js
 import {search} from 'isomorphic-mapzen-search'
 search(MAPZEN_API_KEY, '1301 U Street NW, Washington, DC', {
-  boundary: { // See all parameters here: https://mapzen.com/documentation/search/search/#narrow-your-search
-    country: 'US'
+  boundary: {
+    country: 'US',
+    maxLatlng: maxLatlng,
+    minLatlng: minLatlng
   },
-  focus_latlng: {lat: 39.7691, lng: -86.1570},
+  circle: {
+    centerLatlng: centerLatlng,
+    radius: 35 // kilometers
+  },
+  focusLatlng: {lat: 39.7691, lng: -86.1570},
   format: false // keep as returned GeoJSON
 }).then(geojson => {
   console.log(geojson)
@@ -20,7 +26,7 @@ search(MAPZEN_API_KEY, '1301 U Street NW, Washington, DC', {
 })
 ```
 
-### `reverse(api_key, latlng, options = {})`
+### `reverse(apiKey, latlng, options = {})`
 
 ```js
 import {reverse} from 'isomorphic-mapzen-search'
