@@ -58,7 +58,7 @@ function run (url, query, format) {
 
 function split ({geometry, properties}) {
   return Object.assign({}, properties, {
-    address: properties.label,
+    address: `${properties.label} ${properties.postalcode}`,
     latlng: lonlng.fromCoordinates(geometry.coordinates)
   })
 }
