@@ -1,6 +1,6 @@
 {
   "name": "isomorphic-mapzen-search",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Isomorphic Mapzen search for reuse across our libraries.",
   "main": "./build/index",
   "babel": {
