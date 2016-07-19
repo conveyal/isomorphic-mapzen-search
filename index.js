@@ -2,15 +2,15 @@ import fetch from 'isomorphic-fetch'
 import lonlng from 'lonlng'
 import qs from 'qs'
 
-const mapzen_url = 'https://search.mapzen.com/v1'
-const search_url = `${mapzen_url}/search`
-const reverse_url = `${mapzen_url}/reverse`
+const mapzenUrl = 'https://search.mapzen.com/v1'
+const searchUrl = `${mapzenUrl}/search`
+const reverseUrl = `${mapzenUrl}/reverse`
 
-export function search (api_key, text, {boundary, focusLatlng, format} = {}) {
+export function search (apiKey, text, {boundary, focusLatlng, format} = {}) {
   if (!text) return Promise.resolve([])
 
   const query = {
-    api_key,
+    api_key: apiKey,
     sources: 'gn,oa,osm,wof',
     text
   }
@@ -39,13 +39,13 @@ export function search (api_key, text, {boundary, focusLatlng, format} = {}) {
     }
   }
 
-  return run(search_url, query, format)
+  return run(searchUrl, query, format)
 }
 
-export function reverse (api_key, latlng, {format} = {}) {
+export function reverse (apiKey, latlng, {format} = {}) {
   const {lng, lat} = lonlng(latlng)
-  return run(reverse_url, {
-    api_key,
+  return run(reverseUrl, {
+    api_key: apiKey,
     'point.lat': lat,
     'point.lon': lng
   }, format)
