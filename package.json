@@ -24,14 +24,14 @@
   "homepage": "https://github.com/conveyal/isomorphic-mapzen-search",
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
-    "lonlng": "0.0.1",
-    "qs": "^6.0.2"
+    "lonlng": "0.1.0",
+    "qs": "^6.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
-    "babel-core": "^6.4.5",
-    "babel-preset-es2015": "^6.3.13",
+    "babel-core": "^6.10.4",
+    "babel-preset-es2015": "^6.9.0",
     "semantic-release": "^4.3.5",
-    "tape": "^4.4.0"
+    "tape": "^4.6.0"
   }
 }
