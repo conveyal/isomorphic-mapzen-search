@@ -11,6 +11,7 @@ export function search (api_key, text, {boundary, focusLatlng, format} = {}) {
 
   const query = {
     api_key,
+    sources: 'gn,oa,osm,wof',
     text
   }
 
