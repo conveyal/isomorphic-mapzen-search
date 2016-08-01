@@ -14,7 +14,7 @@ search(MAPZEN_API_KEY, '1301 U Street NW, Washington, DC', {
     minLatlng: minLatlng
   },
   circle: {
-    centerLatlng: centerLatlng,
+    latlng: centerLatlng,
     radius: 35 // kilometers
   },
   focusLatlng: {lat: 39.7691, lng: -86.1570},
