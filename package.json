@@ -19,7 +19,7 @@
   "homepage": "https://github.com/conveyal/isomorphic-mapzen-search",
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
-    "lonlng": "0.1.0",
+    "lonlng": "0.2.0",
     "qs": "^6.2.0"
   },
   "devDependencies": {
