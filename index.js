@@ -6,7 +6,7 @@ const mapzenUrl = 'https://search.mapzen.com/v1'
 const searchUrl = `${mapzenUrl}/search`
 const reverseUrl = `${mapzenUrl}/reverse`
 
-export function search (apiKey, text, {boundary, focusLatlng, format} = {}) {
+export function search (apiKey, text, {boundary, focusLatlng, format} = {}, fetchOptions = {}) {
   if (!text) return Promise.resolve([])
 
   const query = {
@@ -39,27 +39,27 @@ export function search (apiKey, text, {boundary, focusLatlng, format} = {}) {
     }
   }
 
-  return run(searchUrl, query, format)
+  return run(searchUrl, query, format, fetchOptions)
 }
 
-export function reverse (apiKey, latlng, {format} = {}) {
+export function reverse (apiKey, latlng, {format} = {}, fetchOptions = {}) {
   const {lng, lat} = lonlng(latlng)
   return run(reverseUrl, {
     api_key: apiKey,
     'point.lat': lat,
     'point.lon': lng
-  }, format)
+  }, format, fetchOptions)
 }
 
-function run (url, query, format) {
-  return fetch(`${url}?${qs.stringify(query)}`)
+function run (url, query, format, fetchOptions) {
+  return fetch(`${url}?${qs.stringify(query)}`, fetchOptions)
     .then(res => res.json())
     .then(json => { return json && json.features && format ? json.features.map(split) : json })
 }
 
 function split ({geometry, properties}) {
   return Object.assign({}, properties, {
-    address: `${properties.label} ${properties.postalcode}`,
+    address: `${properties.label}${properties.postalcode ? ' ' + properties.postalcode : ''}`,
     latlng: lonlng.fromCoordinates(geometry.coordinates)
   })
 }

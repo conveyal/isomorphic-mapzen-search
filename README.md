@@ -1,9 +1,9 @@
 # isomorphic-mapzen-search
-Isomorphic Mapzen search for reuse across our JavaScript libraries. Get an API key [here](https://mapzen.com/developers). Coordinates must be anything that can be parsed by [lonlng](https://github.com/conveyal/lonlng).
+Isomorphic Mapzen search for reuse across our JavaScript libraries. Get an API key [here](https://mapzen.com/developers). Coordinates must be anything that can be parsed by [lonlng](https://github.com/conveyal/lonlng).  `fetchOptions` can be any options passed along by [isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch).
 
 ## API
 
-### `search(apiKey, searchText, options = {})`
+### `search(apiKey, searchText, options = {}, fetchOptions = {})`
 
 ```js
 import {search} from 'isomorphic-mapzen-search'
@@ -26,7 +26,7 @@ search(MAPZEN_API_KEY, '1301 U Street NW, Washington, DC', {
 })
 ```
 
-### `reverse(apiKey, latlng, options = {})`
+### `reverse(apiKey, latlng, options = {}, fetchOptions = {})`
 
 ```js
 import {reverse} from 'isomorphic-mapzen-search'
@@ -35,6 +35,8 @@ reverse(MAPZEN_API_KEY, {
   lng: -86.1570
 }, {
   format: true
+}, {
+  timeout: 10000
 }).then(json => {
   console.log(json[0].address)
 }).catch(err => {
