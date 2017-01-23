@@ -1,5 +1,5 @@
+import lonlat from '@conveyal/lonlat'
 import fetch from 'isomorphic-fetch'
-import lonlng from 'lonlng'
 import qs from 'qs'
 
 const mapzenUrl = 'https://search.mapzen.com/v1'
@@ -16,7 +16,7 @@ export function search (apiKey, text, {boundary, focusLatlng, format} = {}) {
   }
 
   if (focusLatlng) {
-    const {lat, lng} = lonlng(focusLatlng)
+    const {lat, lng} = lonlat(focusLatlng)
     query['focus.point.lat'] = lat
     query['focus.point.lon'] = lng
   }
@@ -24,15 +24,15 @@ export function search (apiKey, text, {boundary, focusLatlng, format} = {}) {
   if (boundary) {
     if (boundary.country) query['boundary.country'] = boundary.country
     if (boundary.rect) {
-      const min = lonlng(boundary.rect.minLatlng)
-      const max = lonlng(boundary.rect.maxLatlng)
+      const min = lonlat(boundary.rect.minLatlng)
+      const max = lonlat(boundary.rect.maxLatlng)
       query['boundary.rect.min_lat'] = min.lat
       query['boundary.rect.min_lon'] = min.lng
       query['boundary.rect.max_lat'] = max.lat
       query['boundary.rect.max_lon'] = max.lng
     }
     if (boundary.circle) {
-      const {lat, lng} = lonlng(boundary.circle.latlng)
+      const {lat, lng} = lonlat(boundary.circle.latlng)
       query['boundary.circle.lat'] = lat
       query['boundary.circle.lon'] = lng
       query['boundary.circle.radius'] = boundary.circle.radius
@@ -43,7 +43,7 @@ export function search (apiKey, text, {boundary, focusLatlng, format} = {}) {
 }
 
 export function reverse (apiKey, latlng, {format} = {}) {
-  const {lng, lat} = lonlng(latlng)
+  const {lng, lat} = lonlat(latlng)
   return run(reverseUrl, {
     api_key: apiKey,
     'point.lat': lat,
@@ -59,7 +59,7 @@ function run (url, query, format) {
 
 function split ({geometry, properties}) {
   return Object.assign({}, properties, {
-    address: `${properties.label} ${properties.postalcode}`,
-    latlng: lonlng.fromCoordinates(geometry.coordinates)
+    address: `${properties.label}${properties.postalcode ? ' ' + properties.postalcode : ''}`,
+    latlng: lonlat.fromCoordinates(geometry.coordinates)
   })
 }

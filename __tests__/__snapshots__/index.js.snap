@@ -1,0 +1,66 @@
+exports[`reverse should successfully reverse geocode and format 1`] = `
+Array [
+  Object {
+    "accuracy": "centroid",
+    "address": "Takoma, Takoma Park, MD, USA",
+    "confidence": 1,
+    "country": "United States",
+    "country_a": "USA",
+    "country_gid": "whosonfirst:country:85633793",
+    "county": "Montgomery County",
+    "county_gid": "whosonfirst:county:102082719",
+    "distance": 0,
+    "gid": "whosonfirst:neighbourhood:85851759",
+    "id": "85851759",
+    "label": "Takoma, Takoma Park, MD, USA",
+    "latlng": Object {
+      "lat": 38.976745,
+      "lon": -77.023104,
+    },
+    "layer": "neighbourhood",
+    "locality": "Takoma Park",
+    "locality_gid": "whosonfirst:locality:85949501",
+    "name": "Takoma",
+    "neighbourhood": "Takoma",
+    "neighbourhood_gid": "whosonfirst:neighbourhood:85851759",
+    "region": "Maryland",
+    "region_a": "MD",
+    "region_gid": "whosonfirst:region:85688501",
+    "source": "whosonfirst",
+    "source_id": "85851759",
+  },
+]
+`;
+
+exports[`search should successfully geocode and format 1`] = `
+Array [
+  Object {
+    "accuracy": "centroid",
+    "address": "Takoma, Takoma Park, MD, USA",
+    "confidence": 0.965,
+    "country": "United States",
+    "country_a": "USA",
+    "country_gid": "whosonfirst:country:85633793",
+    "county": "Montgomery County",
+    "county_gid": "whosonfirst:county:102082719",
+    "gid": "whosonfirst:neighbourhood:85851759",
+    "id": "85851759",
+    "label": "Takoma, Takoma Park, MD, USA",
+    "latlng": Object {
+      "lat": 38.976745,
+      "lon": -77.023104,
+    },
+    "layer": "neighbourhood",
+    "locality": "Takoma Park",
+    "locality_gid": "whosonfirst:locality:85949501",
+    "name": "Takoma",
+    "neighbourhood": "Takoma",
+    "neighbourhood_gid": "whosonfirst:neighbourhood:85851759",
+    "region": "Maryland",
+    "region_a": "MD",
+    "region_gid": "whosonfirst:region:85688501",
+    "source": "whosonfirst",
+    "source_id": "85851759",
+  },
+]
+`;
