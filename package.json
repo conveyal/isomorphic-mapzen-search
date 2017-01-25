@@ -3,9 +3,11 @@
   "description": "Isomorphic Mapzen search for reuse across our libraries.",
   "main": "./build/index",
   "scripts": {
-    "prepublish": "mastarm prepublish index.js",
-    "test": "mastarm lint",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "cover": "mastarm test --coverage --coverage-paths index.js",
+    "lint": "mastarm lint",
+    "prepublish": "mastarm prepublish index.js:build/index.js",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "test": "mastarm test"
   },
   "repository": {
     "type": "git",
@@ -18,13 +20,13 @@
   },
   "homepage": "https://github.com/conveyal/isomorphic-mapzen-search",
   "dependencies": {
+    "@conveyal/lonlat": "^1.1.0",
     "isomorphic-fetch": "^2.2.1",
-    "lonlng": "0.1.0",
     "qs": "^6.2.0"
   },
   "devDependencies": {
-    "mastarm": "^0.10.0",
-    "semantic-release": "^6.3.2",
-    "tape": "^4.6.0"
+    "mastarm": "^3.1.1",
+    "nock": "^9.0.2",
+    "semantic-release": "^6.3.2"
   }
 }
