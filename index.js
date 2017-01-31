@@ -6,12 +6,19 @@ const mapzenUrl = 'https://search.mapzen.com/v1'
 const searchUrl = `${mapzenUrl}/search`
 const reverseUrl = `${mapzenUrl}/reverse`
 
-export function search (apiKey, text, {boundary, focusLatlng, format} = {}) {
+export function search (apiKey, text, {
+  boundary,
+  focusLatlng,
+  format,
+  size = 10,
+  sources = 'gn,oa,osm,wof'
+} = {}) {
   if (!text) return Promise.resolve([])
 
   const query = {
     api_key: apiKey,
-    sources: 'gn,oa,osm,wof',
+    size,
+    sources,
     text
   }
 
@@ -57,7 +64,10 @@ function run (url, query, format) {
     .then(json => { return json && json.features && format ? json.features.map(split) : json })
 }
 
-function split ({geometry, properties}) {
+function split ({
+  geometry,
+  properties
+}) {
   return Object.assign({}, properties, {
     address: `${properties.label} ${properties.postalcode}`,
     latlng: lonlng.fromCoordinates(geometry.coordinates)
