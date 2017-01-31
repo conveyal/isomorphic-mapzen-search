@@ -15,7 +15,7 @@ describe('search', () => {
       .get(/v1\/search/)
       .reply(200, mockSearchResult)
 
-    const result = await geocoder.search(mockKey, searchQuery)
+    const result = await geocoder.search({apiKey: mockKey, text: searchQuery})
     expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
   })
 
@@ -24,7 +24,7 @@ describe('search', () => {
       .get(/v1\/search/)
       .reply(200, mockSearchResult)
 
-    const result = await geocoder.search(mockKey, searchQuery, { format: true })
+    const result = await geocoder.search({apiKey: mockKey, format: true, text: searchQuery})
     expect(result).toMatchSnapshot()
     expect(result[0].address).toEqual('Takoma, Takoma Park, MD, USA')
   })
@@ -38,7 +38,7 @@ describe('reverse', () => {
       .get(/v1\/reverse/)
       .reply(200, mockReverseResult)
 
-    const result = await geocoder.reverse(mockKey, reverseQuery)
+    const result = await geocoder.reverse({apiKey: mockKey, point: reverseQuery})
     expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
   })
 
@@ -47,7 +47,7 @@ describe('reverse', () => {
       .get(/v1\/reverse/)
       .reply(200, mockReverseResult)
 
-    const result = await geocoder.reverse(mockKey, reverseQuery, { format: true })
+    const result = await geocoder.reverse({apiKey: mockKey, format: true, point: reverseQuery})
     expect(result).toMatchSnapshot()
     expect(result[0].address).toEqual('Takoma, Takoma Park, MD, USA')
   })

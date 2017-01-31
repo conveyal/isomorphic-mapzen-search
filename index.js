@@ -6,13 +6,15 @@ const mapzenUrl = 'https://search.mapzen.com/v1'
 const searchUrl = `${mapzenUrl}/search`
 const reverseUrl = `${mapzenUrl}/reverse`
 
-export function search (apiKey, text, {
+export function search ({
+  apiKey,
   boundary,
-  focusLatlng,
+  focusPoint,
   format,
   size = 10,
-  sources = 'gn,oa,osm,wof'
-} = {}) {
+  sources = 'gn,oa,osm,wof',
+  text
+}) {
   if (!text) return Promise.resolve([])
 
   const query = {
@@ -22,8 +24,8 @@ export function search (apiKey, text, {
     text
   }
 
-  if (focusLatlng) {
-    const {lat, lon} = lonlat(focusLatlng)
+  if (focusPoint) {
+    const {lat, lon} = lonlat(focusPoint)
     query['focus.point.lat'] = lat
     query['focus.point.lon'] = lon
   }
@@ -31,37 +33,47 @@ export function search (apiKey, text, {
   if (boundary) {
     if (boundary.country) query['boundary.country'] = boundary.country
     if (boundary.rect) {
-      const min = lonlat(boundary.rect.minLatlng)
-      const max = lonlat(boundary.rect.maxLatlng)
-      query['boundary.rect.min_lat'] = min.lat
-      query['boundary.rect.min_lon'] = min.lon
-      query['boundary.rect.max_lat'] = max.lat
-      query['boundary.rect.max_lon'] = max.lon
+      query['boundary.rect.min_lat'] = boundary.rect.minLat
+      query['boundary.rect.min_lon'] = boundary.rect.minLon
+      query['boundary.rect.max_lat'] = boundary.rect.maxLat
+      query['boundary.rect.max_lon'] = boundary.rect.maxLon
     }
     if (boundary.circle) {
-      const {lat, lon} = lonlat(boundary.circle.latlng)
+      const {lat, lon} = lonlat(boundary.circle.centerPoint)
       query['boundary.circle.lat'] = lat
       query['boundary.circle.lon'] = lon
       query['boundary.circle.radius'] = boundary.circle.radius
     }
   }
 
-  return run(searchUrl, query, format)
+  return run({format, query})
 }
 
-export function reverse (apiKey, latlon, {format} = {}) {
-  const {lon, lat} = lonlat(latlon)
-  return run(reverseUrl, {
-    api_key: apiKey,
-    'point.lat': lat,
-    'point.lon': lon
-  }, format)
+export function reverse ({
+  apiKey,
+  format,
+  point
+}) {
+  const {lon, lat} = lonlat(point)
+  return run({
+    format,
+    query: {
+      api_key: apiKey,
+      'point.lat': lat,
+      'point.lon': lon
+    },
+    url: reverseUrl
+  })
 }
 
-function run (url, query, format) {
+function run ({
+  format = false,
+  query,
+  url = searchUrl
+}) {
   return fetch(`${url}?${qs.stringify(query)}`)
-    .then(res => res.json())
-    .then(json => { return json && json.features && format ? json.features.map(split) : json })
+    .then((res) => res.json())
+    .then((json) => { return json && json.features && format ? json.features.map(split) : json })
 }
 
 function split ({

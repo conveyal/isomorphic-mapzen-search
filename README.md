@@ -10,14 +10,14 @@ import {search} from 'isomorphic-mapzen-search'
 search(MAPZEN_API_KEY, '1301 U Street NW, Washington, DC', {
   boundary: {
     country: 'US',
-    maxLatlng: maxLatlng,
-    minLatlng: minLatlng
+    maxLonLat: maxLonLat,
+    minLonLat: minLonLat
   },
   circle: {
-    latlng: centerLatlng,
+    center: centerLonLat,
     radius: 35 // kilometers
   },
-  focusLatlng: {lat: 39.7691, lng: -86.1570},
+  focusLonLat: {lat: 39.7691, lon: -86.1570},
   format: false // keep as returned GeoJSON
 }).then(geojson => {
   console.log(geojson)
