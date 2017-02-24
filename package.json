@@ -7,7 +7,8 @@
     "lint": "mastarm lint",
     "prepublish": "mastarm prepublish index.js:build/index.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "test": "mastarm test"
+    "test": "mastarm test",
+    "test-node": "mastarm test --test-environment node"
   },
   "standard": {
     "parser": "babel-eslint"

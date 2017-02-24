@@ -1,6 +1,16 @@
 import lonlat from '@conveyal/lonlat'
-import fetch from 'isomorphic-fetch'
 import qs from 'qs'
+
+let fetch = (
+  typeof window === 'object'
+    ? window.fetch
+    : (
+      typeof global === 'object'
+        ? global.fetch
+        : undefined))
+if (!fetch) {
+  fetch = require('isomorphic-fetch')
+}
 
 const mapzenUrl = 'https://search.mapzen.com/v1'
 const searchUrl = `${mapzenUrl}/search`
