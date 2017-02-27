@@ -7,6 +7,37 @@ const mockReverseResult = require('./mock-reverse-result.json')
 const mockSearchResult = require('./mock-search-result.json')
 const mockKey = 'test-key'
 
+describe('autocomplete', () => {
+  it('should successfully autocomplete', (done) => {
+    nock('https://search.mapzen.com/')
+      .get(/v1\/autocomplete/)
+      .reply(200, mockSearchResult)
+
+    let numResultsHandled = 0
+
+    const resultsHandler = (result) => {
+      numResultsHandled++
+      expect(numResultsHandled).toEqual(1)
+      expect(result).toMatchSnapshot()
+      expect(result.features[0].properties.label).toEqual('Takoma, Takoma Park, MD, USA')
+      done()
+    }
+
+    const autocomplete = new geocoder.Autocomplete({
+      apiKey: mockKey,
+      resultsHandler
+    })
+
+    autocomplete.query({
+      text: 'anywhere'
+    })
+
+    autocomplete.query({
+      text: '123 abc st'
+    })
+  })
+})
+
 describe('search', () => {
   const searchQuery = '123 abc st'
 
