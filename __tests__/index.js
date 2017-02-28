@@ -7,6 +7,26 @@ const mockReverseResult = require('./mock-reverse-result.json')
 const mockSearchResult = require('./mock-search-result.json')
 const mockKey = 'test-key'
 
+describe('autocomplete', () => {
+  it('should successfully autocomplete', async () => {
+    nock('https://search.mapzen.com/')
+      .get(/v1\/autocomplete/)
+      .reply(200, mockSearchResult)
+
+    const result = await geocoder.autocomplete({apiKey: mockKey, text: '123 a'})
+    expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
+  })
+
+  it('should successfully autocomplete and include query in response', async () => {
+    nock('https://search.mapzen.com/')
+      .get(/v1\/autocomplete/)
+      .reply(200, mockSearchResult)
+
+    const result = await geocoder.autocomplete({apiKey: mockKey, includeQueryInResponse: true, text: '123 a'})
+    expect(result).toMatchSnapshot()
+  })
+})
+
 describe('search', () => {
   const searchQuery = '123 abc st'
 

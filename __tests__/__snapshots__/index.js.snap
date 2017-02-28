@@ -1,3 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`autocomplete should successfully autocomplete and include query in response 1`] = `
+Object {
+  "bbox": Array [
+    -77.017897,
+    38.904,
+    -76.978642,
+    39.001084,
+  ],
+  "features": Array [
+    Object {
+      "bbox": Array [
+        -77.017242,
+        38.973896,
+        -77.012062,
+        38.980594,
+      ],
+      "geometry": Object {
+        "coordinates": Array [
+          -77.023104,
+          38.976745,
+        ],
+        "type": "Point",
+      },
+      "properties": Object {
+        "accuracy": "centroid",
+        "confidence": 0.965,
+        "country": "United States",
+        "country_a": "USA",
+        "country_gid": "whosonfirst:country:85633793",
+        "county": "Montgomery County",
+        "county_gid": "whosonfirst:county:102082719",
+        "gid": "whosonfirst:neighbourhood:85851759",
+        "id": "85851759",
+        "label": "Takoma, Takoma Park, MD, USA",
+        "layer": "neighbourhood",
+        "locality": "Takoma Park",
+        "locality_gid": "whosonfirst:locality:85949501",
+        "name": "Takoma",
+        "neighbourhood": "Takoma",
+        "neighbourhood_gid": "whosonfirst:neighbourhood:85851759",
+        "region": "Maryland",
+        "region_a": "MD",
+        "region_gid": "whosonfirst:region:85688501",
+        "source": "whosonfirst",
+        "source_id": "85851759",
+      },
+      "type": "Feature",
+    },
+  ],
+  "geocoding": Object {
+    "attribution": "https://search.mapzen.com/v1/attribution",
+    "engine": Object {
+      "author": "Mapzen",
+      "name": "Pelias",
+      "version": "1.0",
+    },
+    "query": Object {
+      "boundary.circle.lat": 38.8886,
+      "boundary.circle.lon": -77.043,
+      "boundary.circle.radius": 25,
+      "private": false,
+      "querySize": 20,
+      "size": 10,
+      "sources": Array [
+        "geonames",
+        "openaddresses",
+        "openstreetmap",
+        "whosonfirst",
+      ],
+      "text": "takoma",
+    },
+    "timestamp": 1479272483487,
+    "version": "0.2",
+  },
+  "isomorphicMapzenSearchQuery": Object {
+    "api_key": "test-key",
+    "sources": "gn,oa,osm,wof",
+    "text": "123 a",
+  },
+  "type": "FeatureCollection",
+}
+`;
+
 exports[`reverse should successfully reverse geocode and format 1`] = `
 Array [
   Object {

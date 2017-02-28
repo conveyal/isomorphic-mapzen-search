@@ -1,21 +1,99 @@
+/* globals fetch */
+
 import lonlat from '@conveyal/lonlat'
 import qs from 'qs'
 
-let fetch = (
-  typeof window === 'object'
-    ? window.fetch
-    : (
-      typeof global === 'object'
-        ? global.fetch
-        : undefined))
-if (!fetch) {
-  fetch = require('isomorphic-fetch')
+if (typeof (fetch) === 'undefined') {
+  require('isomorphic-fetch')
 }
 
 const mapzenUrl = 'https://search.mapzen.com/v1'
-const searchUrl = `${mapzenUrl}/search`
+const autocompleteUrl = `${mapzenUrl}/autocomplete`
 const reverseUrl = `${mapzenUrl}/reverse`
+const searchUrl = `${mapzenUrl}/search`
 
+/**
+ * Search for and address using
+ * Mapzen's {@link https://mapzen.com/documentation/search/autocomplete/|Autocomplete}
+ * service.
+ *
+ * @param {Object} $0
+ * @param  {string} $0.apiKey                     The Mapzen API key
+ * @param  {Object} $0.boundary
+ * @param  {Object} $0.focusPoint
+ * @param  {boolean} $0.format
+ * @param  {string} $0.layers                     a comma-separated list of
+ *   {@link https://mapzen.com/documentation/search/autocomplete/#layers|layer types}
+ * @param  {string} [$0.sources='gn,oa,osm,wof']
+ * @param  {string} $0.text                       query text
+ * @return {Promise}                              A Promise that'll get resolved with the autocomplete result
+ */
+export function autocomplete ({
+  apiKey,
+  boundary,
+  focusPoint,
+  format,
+  layers,
+  sources = 'gn,oa,osm,wof',
+  text
+}) {
+  // build query
+  const query = {
+    api_key: apiKey,
+    sources,
+    text
+  }
+
+  if (layers) {
+    query.layers = layers
+  }
+
+  if (focusPoint) {
+    const {lat, lon} = lonlat(focusPoint)
+    query['focus.point.lat'] = lat
+    query['focus.point.lon'] = lon
+  }
+
+  if (boundary) {
+    if (boundary.country) query['boundary.country'] = boundary.country
+    if (boundary.rect) {
+      query['boundary.rect.min_lat'] = boundary.rect.minLat
+      query['boundary.rect.min_lon'] = boundary.rect.minLon
+      query['boundary.rect.max_lat'] = boundary.rect.maxLat
+      query['boundary.rect.max_lon'] = boundary.rect.maxLon
+    }
+    /* Circle currently not supported in autocomplete
+    if (boundary.circle) {
+      const {lat, lon} = lonlat(boundary.circle.centerPoint)
+      query['boundary.circle.lat'] = lat
+      query['boundary.circle.lon'] = lon
+      query['boundary.circle.radius'] = boundary.circle.radius
+    }
+    */
+  }
+
+  return run({
+    format,
+    query,
+    url: autocompleteUrl
+  })
+}
+
+/**
+ * Search for an address using
+ * Mapzen's {@link https://mapzen.com/documentation/search/search/|Search}
+ * service.
+ *
+ * @param {Object} $0
+ * @param {string} $0.apiKey                    The Mapzen API key
+ * @param {Object} $0.boundary
+ * @param {Object} $0.focusPoint
+ * @param {boolean} $0.format
+ * @param {number} [$0.size=10]
+ * @param {string} [$0.sources='gn,oa,osm,wof']
+ * @param {string} $0.text                      The address text to query for
+ * @return {Promise}                            A Promise that'll get resolved with search result
+ */
 export function search ({
   apiKey,
   boundary,
@@ -59,6 +137,17 @@ export function search ({
   return run({format, query})
 }
 
+/**
+ * Reverse geocode using
+ * Mapzen's {@link https://mapzen.com/documentation/search/reverse/|Reverse geocoding}
+ * service.
+ *
+ * @param {Object} $0
+ * @param {string} $0.apiKey                    The Mapzen API key
+ * @param {boolean} $0.format
+ * @param {{lat: number, lon: number}} $0.point Point to reverse geocode
+ * @return {Promise}                            A Promise that'll get resolved with reverse geocode result
+ */
 export function reverse ({
   apiKey,
   format,
@@ -83,7 +172,16 @@ function run ({
 }) {
   return fetch(`${url}?${qs.stringify(query)}`)
     .then((res) => res.json())
-    .then((json) => { return json && json.features && format ? json.features.map(split) : json })
+    .then((json) => {
+      let jsonResponse = json
+      if (json && json.features && format) {
+        jsonResponse = json.features.map(split)
+      }
+
+      jsonResponse.isomorphicMapzenSearchQuery = query
+
+      return jsonResponse
+    })
 }
 
 function split ({
