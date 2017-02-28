@@ -22,7 +22,6 @@ const searchUrl = `${mapzenUrl}/search`
  * @param  {Object} $0.boundary
  * @param  {Object} $0.focusPoint
  * @param  {boolean} $0.format
- * @param {boolean} $0.includeQueryInResponse     If true, return query object in output of resolved Promise
  * @param  {string} $0.layers                     a comma-separated list of
  *   {@link https://mapzen.com/documentation/search/autocomplete/#layers|layer types}
  * @param  {string} [$0.sources='gn,oa,osm,wof']
@@ -34,7 +33,6 @@ export function autocomplete ({
   boundary,
   focusPoint,
   format,
-  includeQueryInResponse,
   layers,
   sources = 'gn,oa,osm,wof',
   text
@@ -76,7 +74,6 @@ export function autocomplete ({
 
   return run({
     format,
-    includeQueryInResponse,
     query,
     url: autocompleteUrl
   })
@@ -92,7 +89,6 @@ export function autocomplete ({
  * @param {Object} $0.boundary
  * @param {Object} $0.focusPoint
  * @param {boolean} $0.format
- * @param {boolean} $0.includeQueryInResponse   If true, return query object in output of resolved Promise
  * @param {number} [$0.size=10]
  * @param {string} [$0.sources='gn,oa,osm,wof']
  * @param {string} $0.text                      The address text to query for
@@ -103,7 +99,6 @@ export function search ({
   boundary,
   focusPoint,
   format,
-  includeQueryInResponse,
   size = 10,
   sources = 'gn,oa,osm,wof',
   text
@@ -139,7 +134,7 @@ export function search ({
     }
   }
 
-  return run({format, includeQueryInResponse, query})
+  return run({format, query})
 }
 
 /**
@@ -150,20 +145,17 @@ export function search ({
  * @param {Object} $0
  * @param {string} $0.apiKey                    The Mapzen API key
  * @param {boolean} $0.format
- * @param {boolean} $0.includeQueryInResponse   If true, return query object in output of resolved Promise
  * @param {{lat: number, lon: number}} $0.point Point to reverse geocode
  * @return {Promise}                            A Promise that'll get resolved with reverse geocode result
  */
 export function reverse ({
   apiKey,
   format,
-  includeQueryInResponse,
   point
 }) {
   const {lon, lat} = lonlat(point)
   return run({
     format,
-    includeQueryInResponse,
     query: {
       api_key: apiKey,
       'point.lat': lat,
@@ -176,7 +168,6 @@ export function reverse ({
 function run ({
   format = false,
   query,
-  includeQueryInResponse,
   url = searchUrl
 }) {
   return fetch(`${url}?${qs.stringify(query)}`)
@@ -187,14 +178,9 @@ function run ({
         jsonResponse = json.features.map(split)
       }
 
-      if (includeQueryInResponse) {
-        return {
-          query,
-          jsonResponse
-        }
-      } else {
-        return jsonResponse
-      }
+      jsonResponse.isomorphicMapzenSearchQuery = query
+
+      return jsonResponse
     })
 }
 
