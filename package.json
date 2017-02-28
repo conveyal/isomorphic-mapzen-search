@@ -29,7 +29,7 @@
     "qs": "^6.3.0"
   },
   "devDependencies": {
-    "mastarm": "^3.3.0",
+    "mastarm": "^3.5.0",
     "nock": "^9.0.2",
     "semantic-release": "^6.3.2"
   }
