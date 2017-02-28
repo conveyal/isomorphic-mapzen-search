@@ -8,33 +8,22 @@ const mockSearchResult = require('./mock-search-result.json')
 const mockKey = 'test-key'
 
 describe('autocomplete', () => {
-  it('should successfully autocomplete', (done) => {
+  it('should successfully autocomplete', async () => {
     nock('https://search.mapzen.com/')
       .get(/v1\/autocomplete/)
       .reply(200, mockSearchResult)
 
-    let numResultsHandled = 0
+    const result = await geocoder.autocomplete({apiKey: mockKey, text: '123 a'})
+    expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
+  })
 
-    const resultsHandler = (result) => {
-      numResultsHandled++
-      expect(numResultsHandled).toEqual(1)
-      expect(result).toMatchSnapshot()
-      expect(result.features[0].properties.label).toEqual('Takoma, Takoma Park, MD, USA')
-      done()
-    }
+  it('should successfully autocomplete and include query in response', async () => {
+    nock('https://search.mapzen.com/')
+      .get(/v1\/autocomplete/)
+      .reply(200, mockSearchResult)
 
-    const autocomplete = new geocoder.Autocomplete({
-      apiKey: mockKey,
-      resultsHandler
-    })
-
-    autocomplete.query({
-      text: 'anywhere'
-    })
-
-    autocomplete.query({
-      text: '123 abc st'
-    })
+    const result = await geocoder.autocomplete({apiKey: mockKey, includeQueryInResponse: true, text: '123 a'})
+    expect(result).toMatchSnapshot()
   })
 })
 

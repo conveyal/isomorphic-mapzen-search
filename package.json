@@ -27,13 +27,12 @@
   "homepage": "https://github.com/conveyal/isomorphic-mapzen-search",
   "dependencies": {
     "@conveyal/lonlat": "^1.1.2",
-    "debounce": "^1.0.0",
     "isomorphic-fetch": "^2.2.1",
     "qs": "^6.3.0"
   },
   "devDependencies": {
     "documentation": "^4.0.0-beta.18",
-    "mastarm": "^3.3.0",
+    "mastarm": "^3.5.0",
     "nock": "^9.0.2",
     "semantic-release": "^6.3.2"
   }
