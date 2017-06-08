@@ -26,6 +26,7 @@ const searchUrl = `${mapzenUrl}/search`
  *   {@link https://mapzen.com/documentation/search/autocomplete/#layers|layer types}
  * @param  {string} [$0.sources='gn,oa,osm,wof']
  * @param  {string} $0.text                       query text
+ * @param {string} [$0.url='https://search.mapzen.com/v1/autocomplete']                       optional URL to override Mapzen autocomplete endpoint
  * @return {Promise}                              A Promise that'll get resolved with the autocomplete result
  */
 export function autocomplete ({
@@ -35,7 +36,8 @@ export function autocomplete ({
   format,
   layers,
   sources = 'gn,oa,osm,wof',
-  text
+  text,
+  url = autocompleteUrl
 }) {
   // build query
   const query = {
@@ -75,7 +77,7 @@ export function autocomplete ({
   return run({
     format,
     query,
-    url: autocompleteUrl
+    url
   })
 }
 
@@ -92,6 +94,7 @@ export function autocomplete ({
  * @param {number} [$0.size=10]
  * @param {string} [$0.sources='gn,oa,osm,wof']
  * @param {string} $0.text                      The address text to query for
+ * @param {string} [$0.url='https://search.mapzen.com/v1/search']                     optional URL to override Mapzen search endpoint
  * @return {Promise}                            A Promise that'll get resolved with search result
  */
 export function search ({
@@ -101,7 +104,8 @@ export function search ({
   format,
   size = 10,
   sources = 'gn,oa,osm,wof',
-  text
+  text,
+  url = searchUrl
 }) {
   if (!text) return Promise.resolve([])
 
@@ -146,12 +150,14 @@ export function search ({
  * @param {string} $0.apiKey                    The Mapzen API key
  * @param {boolean} $0.format
  * @param {{lat: number, lon: number}} $0.point Point to reverse geocode
+ * @param {string} [$0.url='https://search.mapzen.com/v1/reverse']                     optional URL to override Mapzen reverse endpoint
  * @return {Promise}                            A Promise that'll get resolved with reverse geocode result
  */
 export function reverse ({
   apiKey,
   format,
-  point
+  point,
+  url = reverseUrl
 }) {
   const {lon, lat} = lonlat(point)
   return run({
@@ -161,7 +167,7 @@ export function reverse ({
       'point.lat': lat,
       'point.lon': lon
     },
-    url: reverseUrl
+    url
   })
 }
 
