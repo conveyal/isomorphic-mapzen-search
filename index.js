@@ -138,7 +138,7 @@ export function search ({
     }
   }
 
-  return run({format, query})
+  return run({format, query, url})
 }
 
 /**
