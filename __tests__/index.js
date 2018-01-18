@@ -39,6 +39,19 @@ describe('search', () => {
     expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
   })
 
+  it('should successfully geocode with a custom url', async () => {
+    nock('https://custom.search.com/')
+      .get(/v1\/search/)
+      .reply(200, mockSearchResult)
+
+    const result = await geocoder.search({
+      apiKey: mockKey,
+      text: searchQuery,
+      url: 'https://custom.search.com/v1/search'
+    })
+    expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
+  })
+
   it('should successfully geocode and format', async () => {
     nock('https://search.mapzen.com/')
       .get(/v1\/search/)
