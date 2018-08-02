@@ -42,9 +42,10 @@ export function autocomplete ({
   // build query
   const query = {
     api_key: apiKey,
-    sources,
     text
   }
+
+  if (sources !== null && sources.length > 0) query.sources = sources
 
   if (layers) {
     query.layers = layers
@@ -112,9 +113,10 @@ export function search ({
   const query = {
     api_key: apiKey,
     size,
-    sources,
     text
   }
+
+  if (sources !== null && sources.length > 0) query.sources = sources
 
   if (focusPoint) {
     const {lat, lon} = lonlat(focusPoint)
