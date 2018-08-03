@@ -8,7 +8,7 @@
     "lint": "mastarm lint",
     "lint-docs": "documentation lint index.js",
     "prepublish": "mastarm prepublish index.js:build/index.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "semantic-release": "semantic-release",
     "test": "yarn run lint && yarn run lint-docs && mastarm test",
     "test-node": "mastarm test --test-environment node"
   },
@@ -32,8 +32,11 @@
   },
   "devDependencies": {
     "documentation": "^4.0.0-beta.18",
-    "mastarm": "^3.5.0",
+    "mastarm": "^4.1.1",
     "nock": "^9.0.2",
-    "semantic-release": "^6.3.2"
+    "semantic-release": "^15.9.3"
+  },
+  "jest": {
+    "testURL": "http://localhost"
   }
 }

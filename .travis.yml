@@ -5,9 +5,9 @@ cache:
 notifications:
   email: false
 node_js:
-  - '6'
+  - '8'
 before_install:
-  - npm i -g codecov
+  - yarn global add codecov
 script:
   - yarn run lint
   - yarn run lint-docs
