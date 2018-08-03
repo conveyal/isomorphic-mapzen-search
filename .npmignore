@@ -1,2 +1,6 @@
 .DS_Store
 tmp
+__tests__
+coverage
+.travis.yml
+yarn.lock
