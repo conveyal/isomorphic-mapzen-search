@@ -45,7 +45,7 @@ export function autocomplete ({
     text
   }
 
-  if (sources !== null && sources.length > 0) query.sources = sources
+  if (sources && sources.length > 0) query.sources = sources
 
   if (layers) {
     query.layers = layers
@@ -116,7 +116,7 @@ export function search ({
     text
   }
 
-  if (sources !== null && sources.length > 0) query.sources = sources
+  if (sources && sources.length > 0) query.sources = sources
 
   if (focusPoint) {
     const {lat, lon} = lonlat(focusPoint)
