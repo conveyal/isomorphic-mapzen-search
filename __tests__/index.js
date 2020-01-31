@@ -17,6 +17,23 @@ describe('autocomplete', () => {
     expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
   })
 
+  it('should successfully autocomplete with custom headers', async () => {
+    nock('https://search.mapzen.com/', {
+      // Check for custom headers passed in below autocomplete request.
+      reqheaders: {
+        'x-api-key': headerValue => headerValue.includes('123')
+      }
+    })
+      .get(/v1\/autocomplete/)
+      .reply(200, mockSearchResult)
+
+    const result = await geocoder.autocomplete({
+      options: {headers: {'x-api-key': 'abc123'}},
+      text: '123+Main+St'
+    })
+    expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
+  })
+
   it('should successfully autocomplete and include query in response', async () => {
     nock('https://search.mapzen.com/')
       .get(/v1\/autocomplete/)
