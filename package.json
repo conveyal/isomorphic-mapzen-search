@@ -34,7 +34,7 @@
     "documentation": "^4.0.0-beta.18",
     "mastarm": "^4.1.1",
     "nock": "^9.0.2",
-    "semantic-release": "^15.9.3"
+    "semantic-release": "^17.2.3"
   },
   "jest": {
     "testURL": "http://localhost"
