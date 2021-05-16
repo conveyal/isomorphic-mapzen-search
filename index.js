@@ -27,6 +27,7 @@ const searchUrl = `${mapzenUrl}/search`
  * @param  {Object} $0.options                    options to pass to fetch (e.g., custom headers)
  * @param  {string} [$0.sources='gn,oa,osm,wof']
  * @param  {string} $0.text                       query text
+ * @param  {string} $0.lang                       query language
  * @param {string} [$0.url='https://search.mapzen.com/v1/autocomplete']                       optional URL to override Mapzen autocomplete endpoint
  * @return {Promise}                              A Promise that'll get resolved with the autocomplete result
  */
@@ -39,12 +40,14 @@ export function autocomplete ({
   options,
   sources = 'gn,oa,osm,wof',
   text,
+  lang,
   url = autocompleteUrl
 }) {
   // build query
   const query = {
     api_key: apiKey,
-    text
+    text,
+    lang
   }
 
   if (sources && sources.length > 0) query.sources = sources
@@ -111,6 +114,7 @@ export function search ({
   size = 10,
   sources = 'gn,oa,osm,wof',
   text,
+  lang,
   url = searchUrl
 }) {
   if (!text) return Promise.resolve([])
@@ -118,7 +122,8 @@ export function search ({
   const query = {
     api_key: apiKey,
     size,
-    text
+    text,
+    lang
   }
 
   if (sources && sources.length > 0) query.sources = sources
