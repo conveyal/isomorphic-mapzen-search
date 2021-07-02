@@ -1,9 +1,11 @@
 /* globals fetch */
 
-import lonlat from '@conveyal/lonlat'
 import qs from 'qs'
+import type { LonLatInput, LonLatOutput } from '@conveyal/lonlat'
 
-if (typeof (fetch) === 'undefined') {
+const lonlat = require('@conveyal/lonlat')
+
+if (typeof fetch === 'undefined') {
   require('isomorphic-fetch')
 }
 
@@ -11,6 +13,39 @@ const mapzenUrl = 'https://search.mapzen.com/v1'
 const autocompleteUrl = `${mapzenUrl}/autocomplete`
 const reverseUrl = `${mapzenUrl}/reverse`
 const searchUrl = `${mapzenUrl}/search`
+
+type Rect = {
+  maxLat: number,
+  maxLon: number,
+  minLat: number,
+  minLon: number
+};
+type Circle = {
+  centerPoint: number,
+  radius: number
+};
+type Boundary = {
+  circle?: Circle,
+  country: string,
+  rect: Rect
+};
+
+// apiKey is renamed depending on if it is being passed around or into fetch
+
+type Query = {
+  api_key: string,
+  apiKey?: string,
+  boundary?: Boundary,
+  focusPoint?: LonLatInput,
+  format?: boolean,
+  layers?: string,
+  options?: Object,
+  point?: LonLatOutput,
+  size?: number,
+  sources?: string,
+  text: string,
+  url?: string
+};
 
 /**
  * Search for and address using
@@ -40,12 +75,9 @@ export function autocomplete ({
   sources = 'gn,oa,osm,wof',
   text,
   url = autocompleteUrl
-}) {
+}: Query): Promise<Array<Object>> {
   // build query
-  const query = {
-    api_key: apiKey,
-    text
-  }
+  const query: Query = { api_key: apiKey, text }
 
   if (sources && sources.length > 0) query.sources = sources
 
@@ -54,7 +86,7 @@ export function autocomplete ({
   }
 
   if (focusPoint) {
-    const {lat, lon} = lonlat(focusPoint)
+    const { lat, lon }: LonLatOutput = lonlat(focusPoint)
     query['focus.point.lat'] = lat
     query['focus.point.lon'] = lon
   }
@@ -112,10 +144,10 @@ export function search ({
   sources = 'gn,oa,osm,wof',
   text,
   url = searchUrl
-}) {
+}: Query): Promise<Array<Object>> {
   if (!text) return Promise.resolve([])
 
-  const query = {
+  const query: Query = {
     api_key: apiKey,
     size,
     text
@@ -124,7 +156,7 @@ export function search ({
   if (sources && sources.length > 0) query.sources = sources
 
   if (focusPoint) {
-    const {lat, lon} = lonlat(focusPoint)
+    const { lat, lon } = lonlat(focusPoint)
     query['focus.point.lat'] = lat
     query['focus.point.lon'] = lon
   }
@@ -138,14 +170,14 @@ export function search ({
       query['boundary.rect.max_lon'] = boundary.rect.maxLon
     }
     if (boundary.circle) {
-      const {lat, lon} = lonlat(boundary.circle.centerPoint)
+      const { lat, lon } = lonlat(boundary.circle.centerPoint)
       query['boundary.circle.lat'] = lat
       query['boundary.circle.lon'] = lon
       query['boundary.circle.radius'] = boundary.circle.radius
     }
   }
 
-  return run({format, options, query, url})
+  return run({ format, options, query, url })
 }
 
 /**
@@ -167,8 +199,8 @@ export function reverse ({
   options,
   point,
   url = reverseUrl
-}) {
-  const {lon, lat} = lonlat(point)
+}: Query): Promise<Array<Object>> {
+  const { lon, lat } = lonlat(point)
   return run({
     format,
     options,
@@ -181,12 +213,13 @@ export function reverse ({
   })
 }
 
+// TODO: turn this into one large async function?
 function run ({
   format = false,
   options,
   query,
   url = searchUrl
-}) {
+}): Promise<Array<Object>> {
   return fetch(`${url}?${qs.stringify(query)}`, options)
     .then((res) => res.json())
     .then((json) => {
@@ -201,12 +234,10 @@ function run ({
     })
 }
 
-function split ({
-  geometry,
-  properties
-}) {
+function split ({ geometry, properties }): Object {
   return Object.assign({}, properties, {
-    address: `${properties.label}${properties.postalcode ? ' ' + properties.postalcode : ''}`,
+    address: `${properties.label}${properties.postalcode ? ' ' + properties.postalcode : ''
+    }`,
     latlng: lonlat.fromCoordinates(geometry.coordinates)
   })
 }
