@@ -9,10 +9,10 @@ if (typeof fetch === 'undefined') {
   require('isomorphic-fetch')
 }
 
-const mapzenUrl = 'https://search.mapzen.com/v1'
-const autocompleteUrl = `${mapzenUrl}/autocomplete`
-const reverseUrl = `${mapzenUrl}/reverse`
-const searchUrl = `${mapzenUrl}/search`
+const mapzenUrl: string = 'https://search.mapzen.com/v1'
+const autocompleteUrl: string = `${mapzenUrl}/autocomplete`
+const reverseUrl: string = `${mapzenUrl}/reverse`
+const searchUrl: string = `${mapzenUrl}/search`
 
 type Rect = {
   maxLat: number,
@@ -156,7 +156,7 @@ export function search ({
   if (sources && sources.length > 0) query.sources = sources
 
   if (focusPoint) {
-    const { lat, lon } = lonlat(focusPoint)
+    const { lat, lon }: LonLatOutput = lonlat(focusPoint)
     query['focus.point.lat'] = lat
     query['focus.point.lon'] = lon
   }
@@ -170,7 +170,7 @@ export function search ({
       query['boundary.rect.max_lon'] = boundary.rect.maxLon
     }
     if (boundary.circle) {
-      const { lat, lon } = lonlat(boundary.circle.centerPoint)
+      const { lat, lon } : LonLatOutput = lonlat(boundary.circle.centerPoint)
       query['boundary.circle.lat'] = lat
       query['boundary.circle.lon'] = lon
       query['boundary.circle.radius'] = boundary.circle.radius
@@ -200,7 +200,7 @@ export function reverse ({
   point,
   url = reverseUrl
 }: Query): Promise<Array<Object>> {
-  const { lon, lat } = lonlat(point)
+  const { lon, lat }: LonLatOutput = lonlat(point)
   return run({
     format,
     options,
@@ -214,6 +214,7 @@ export function reverse ({
 }
 
 // TODO: turn this into one large async function?
+// TODO: replace Array<Object> with more specific output once tests work
 function run ({
   format = false,
   options,
