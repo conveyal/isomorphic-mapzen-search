@@ -1,16 +1,19 @@
 {
   "name": "isomorphic-mapzen-search",
   "description": "Isomorphic Mapzen search for reuse across our libraries.",
-  "main": "./build/index",
+  "main": "./dist/index",
+  "module": "dist/isomorphic-mapzen-search.esm.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "cover": "mastarm test --coverage --coverage-paths index.js",
-    "generate-docs": "documentation readme index.js --document-exported=true -g --section=API",
-    "lint": "mastarm lint __tests__ index.js --quiet",
-    "lint-docs": "documentation lint index.js",
-    "prepublish": "mastarm prepublish index.js:build/index.js",
+    "build": "tsdx build -i index.ts --target node",
+    "cover": "tsdx test --coverage --coverage-paths index.ts",
+    "generate-docs": "documentation readme index.ts --document-exported=true -g --section=API",
+    "lint": "tsdx lint __tests__ index.ts --quiet",
+    "lint-docs": "documentation lint index.ts",
+    "prepublish": "yarn build",
     "semantic-release": "semantic-release",
-    "test": "yarn run lint && yarn run lint-docs && mastarm test",
-    "test-node": "mastarm test --test-environment node"
+    "test": "yarn run lint && yarn run lint-docs && tsdx test",
+    "test-node": "tsdx test --test-environment node"
   },
   "standard": {
     "parser": "babel-eslint"
@@ -28,16 +31,15 @@
   "dependencies": {
     "@conveyal/lonlat": "^1.1.2",
     "isomorphic-fetch": "^2.2.1",
-    "qs": "^6.3.0"
+    "qs": "^6.3.0",
+    "tsdx": "https://github.com/ibi-group/tsdx"
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.3",
     "@types/qs": "^6.9.6",
     "documentation": "^4.0.0-beta.18",
-    "mastarm": "^4.1.1",
     "nock": "^9.0.2",
-    "semantic-release": "^17.2.3",
-    "typescript": "^4.3.5"
+    "semantic-release": "^17.2.3"
   },
   "jest": {
     "testURL": "http://localhost"
