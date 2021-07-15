@@ -1,51 +1,59 @@
-/* globals fetch */
-
-import qs from 'qs'
+// TODO: fetch types. and that weird bug. then run the tests and see what happens!
+import { stringify } from 'qs'
 import type { LonLatInput, LonLatOutput } from '@conveyal/lonlat'
-
-const lonlat = require('@conveyal/lonlat')
+import { normalize, fromCoordinates } from '@conveyal/lonlat'
+import type { RequestInit } from 'node-fetch'
 
 if (typeof fetch === 'undefined') {
   require('isomorphic-fetch')
 }
 
-const mapzenUrl: string = 'https://search.mapzen.com/v1'
-const autocompleteUrl: string = `${mapzenUrl}/autocomplete`
-const reverseUrl: string = `${mapzenUrl}/reverse`
-const searchUrl: string = `${mapzenUrl}/search`
+const mapzenUrl = 'https://search.mapzen.com/v1'
+const autocompleteUrl = `${mapzenUrl}/autocomplete`
+const reverseUrl = `${mapzenUrl}/reverse`
+const searchUrl = `${mapzenUrl}/search`
 
 type Rect = {
-  maxLat: number,
-  maxLon: number,
-  minLat: number,
+  maxLat: number
+  maxLon: number
+  minLat: number
   minLon: number
-};
+}
 type Circle = {
-  centerPoint: number,
+  centerPoint: number
   radius: number
-};
+}
 type Boundary = {
-  circle?: Circle,
-  country: string,
+  circle?: Circle
+  country: string
   rect: Rect
-};
+}
 
 // apiKey is renamed depending on if it is being passed around or into fetch
 
 type Query = {
-  api_key: string,
-  apiKey?: string,
-  boundary?: Boundary,
-  focusPoint?: LonLatInput,
-  format?: boolean,
-  layers?: string,
-  options?: Object,
-  point?: LonLatOutput,
-  size?: number,
-  sources?: string,
-  text: string,
+  // Can be disabled as it is a hack to conform with api
+  // eslint-disable-next-line camelcase
+  api_key: string
+  apiKey?: string
+  boundary?: Boundary
+  focusPoint?: LonLatInput
+  format?: boolean
+  layers?: string
+  options?: RequestInit
+  point?: GeoJSON.Point | LonLatOutput
+  size?: number
+  sources?: string
+  text?: string
   url?: string
-};
+}
+
+type MapzenInput = {
+  format: boolean
+  options: RequestInit
+  query: Query
+  url: string
+}
 
 /**
  * Search for and address using
@@ -65,7 +73,7 @@ type Query = {
  * @param {string} [$0.url='https://search.mapzen.com/v1/autocomplete']                       optional URL to override Mapzen autocomplete endpoint
  * @return {Promise}                              A Promise that'll get resolved with the autocomplete result
  */
-export function autocomplete ({
+export const autocomplete = ({
   apiKey,
   boundary,
   focusPoint,
@@ -75,7 +83,7 @@ export function autocomplete ({
   sources = 'gn,oa,osm,wof',
   text,
   url = autocompleteUrl
-}: Query): Promise<Array<Object>> {
+}: Query): Promise<Array<JSON>> => {
   // build query
   const query: Query = { api_key: apiKey, text }
 
@@ -86,7 +94,7 @@ export function autocomplete ({
   }
 
   if (focusPoint) {
-    const { lat, lon }: LonLatOutput = lonlat(focusPoint)
+    const { lat, lon }: LonLatOutput = normalize(focusPoint)
     query['focus.point.lat'] = lat
     query['focus.point.lon'] = lon
   }
@@ -134,7 +142,7 @@ export function autocomplete ({
  * @param {string} [$0.url='https://search.mapzen.com/v1/search']                     optional URL to override Mapzen search endpoint
  * @return {Promise}                            A Promise that'll get resolved with search result
  */
-export function search ({
+export const search = ({
   apiKey,
   boundary,
   focusPoint,
@@ -144,7 +152,7 @@ export function search ({
   sources = 'gn,oa,osm,wof',
   text,
   url = searchUrl
-}: Query): Promise<Array<Object>> {
+}: Query): Promise<Array<JSON>> => {
   if (!text) return Promise.resolve([])
 
   const query: Query = {
@@ -156,7 +164,7 @@ export function search ({
   if (sources && sources.length > 0) query.sources = sources
 
   if (focusPoint) {
-    const { lat, lon }: LonLatOutput = lonlat(focusPoint)
+    const { lat, lon }: LonLatOutput = normalize(focusPoint)
     query['focus.point.lat'] = lat
     query['focus.point.lon'] = lon
   }
@@ -170,7 +178,8 @@ export function search ({
       query['boundary.rect.max_lon'] = boundary.rect.maxLon
     }
     if (boundary.circle) {
-      const { lat, lon } : LonLatOutput = lonlat(boundary.circle.centerPoint)
+      // TODO: not sure what to do here... It's clearly wrong
+      const { lat, lon }: LonLatOutput = normalize(boundary.circle.centerPoint)
       query['boundary.circle.lat'] = lat
       query['boundary.circle.lon'] = lon
       query['boundary.circle.radius'] = boundary.circle.radius
@@ -193,21 +202,23 @@ export function search ({
  * @param {string} [$0.url='https://search.mapzen.com/v1/reverse']                     optional URL to override Mapzen reverse endpoint
  * @return {Promise}                            A Promise that'll get resolved with reverse geocode result
  */
-export function reverse ({
+export const reverse = ({
   apiKey,
   format,
   options,
   point,
   url = reverseUrl
-}: Query): Promise<Array<Object>> {
-  const { lon, lat }: LonLatOutput = lonlat(point)
+}: Query): Promise<Array<JSON>> => {
+  const { lat, lon }: LonLatOutput = normalize(point)
   return run({
     format,
     options,
     query: {
       api_key: apiKey,
-      'point.lat': lat,
-      'point.lon': lon
+      point: {
+        lat,
+        lon
+      }
     },
     url
   })
@@ -215,13 +226,13 @@ export function reverse ({
 
 // TODO: turn this into one large async function?
 // TODO: replace Array<Object> with more specific output once tests work
-function run ({
+function run({
   format = false,
   options,
   query,
   url = searchUrl
-}): Promise<Array<Object>> {
-  return fetch(`${url}?${qs.stringify(query)}`, options)
+}: MapzenInput): Promise<Array<JSON>> {
+  return fetch(`${url}?${stringify(query)}`, options)
     .then((res) => res.json())
     .then((json) => {
       let jsonResponse = json
@@ -235,10 +246,14 @@ function run ({
     })
 }
 
-function split ({ geometry, properties }): Object {
+function split({ geometry, properties }): Record<string, string | number> {
   return Object.assign({}, properties, {
-    address: `${properties.label}${properties.postalcode ? ' ' + properties.postalcode : ''
+    address: `${properties.label}${
+      properties.postalcode ? ' ' + properties.postalcode : ''
     }`,
-    latlng: lonlat.fromCoordinates(geometry.coordinates)
+    latlng: fromCoordinates(geometry.coordinates)
   })
 }
+
+const toExport = { autocomplete, reverse, search }
+export default toExport
