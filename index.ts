@@ -1,8 +1,6 @@
-// TODO: fetch types. and that weird bug. then run the tests and see what happens!
 import { stringify } from 'qs'
 import type { LonLatInput, LonLatOutput } from '@conveyal/lonlat'
 import { normalize, fromCoordinates } from '@conveyal/lonlat'
-import type { RequestInit } from 'node-fetch'
 
 if (typeof fetch === 'undefined') {
   require('isomorphic-fetch')
@@ -179,7 +177,9 @@ export const search = ({
     }
     if (boundary.circle) {
       // TODO: not sure what to do here... It's clearly wrong
-      const { lat, lon }: LonLatOutput = normalize(boundary.circle.centerPoint)
+      const { lat, lon }: LonLatOutput = normalize(
+        boundary.circle.centerPoint.toString()
+      )
       query['boundary.circle.lat'] = lat
       query['boundary.circle.lon'] = lon
       query['boundary.circle.radius'] = boundary.circle.radius

@@ -2,7 +2,8 @@
 
 const nock = require('nock')
 
-const geocoder = require('../index.js')
+const geocoder = require('../index')
+
 const mockReverseResult = require('./mock-reverse-result.json')
 const mockSearchResult = require('./mock-search-result.json')
 const mockKey = 'test-key'
@@ -13,7 +14,10 @@ describe('autocomplete', () => {
       .get(/v1\/autocomplete/)
       .reply(200, mockSearchResult)
 
-    const result = await geocoder.autocomplete({apiKey: mockKey, text: '123 a'})
+    const result = await geocoder.autocomplete({
+      apiKey: mockKey,
+      text: '123 a'
+    })
     expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
   })
 
@@ -21,14 +25,14 @@ describe('autocomplete', () => {
     nock('https://search.mapzen.com/', {
       // Check for custom headers passed in below autocomplete request.
       reqheaders: {
-        'x-api-key': headerValue => headerValue.includes('123')
+        'x-api-key': (headerValue) => headerValue.includes('123')
       }
     })
       .get(/v1\/autocomplete/)
       .reply(200, mockSearchResult)
 
     const result = await geocoder.autocomplete({
-      options: {headers: {'x-api-key': 'abc123'}},
+      options: { headers: { 'x-api-key': 'abc123' } },
       text: '123+Main+St'
     })
     expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
@@ -39,7 +43,11 @@ describe('autocomplete', () => {
       .get(/v1\/autocomplete/)
       .reply(200, mockSearchResult)
 
-    const result = await geocoder.autocomplete({apiKey: mockKey, includeQueryInResponse: true, text: '123 a'})
+    const result = await geocoder.autocomplete({
+      apiKey: mockKey,
+      includeQueryInResponse: true,
+      text: '123 a'
+    })
     expect(result).toMatchSnapshot()
   })
 })
@@ -52,7 +60,7 @@ describe('search', () => {
       .get(/v1\/search/)
       .reply(200, mockSearchResult)
 
-    const result = await geocoder.search({apiKey: mockKey, text: searchQuery})
+    const result = await geocoder.search({ apiKey: mockKey, text: searchQuery })
     expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
   })
 
@@ -74,7 +82,11 @@ describe('search', () => {
       .get(/v1\/search/)
       .reply(200, mockSearchResult)
 
-    const result = await geocoder.search({apiKey: mockKey, format: true, text: searchQuery})
+    const result = await geocoder.search({
+      apiKey: mockKey,
+      format: true,
+      text: searchQuery
+    })
     expect(result).toMatchSnapshot()
     expect(result[0].address).toEqual('Takoma, Takoma Park, MD, USA')
   })
@@ -88,7 +100,10 @@ describe('reverse', () => {
       .get(/v1\/reverse/)
       .reply(200, mockReverseResult)
 
-    const result = await geocoder.reverse({apiKey: mockKey, point: reverseQuery})
+    const result = await geocoder.reverse({
+      apiKey: mockKey,
+      point: reverseQuery
+    })
     expect(result.features[0].geometry.coordinates[0]).toEqual(-77.023104)
   })
 
@@ -97,7 +112,11 @@ describe('reverse', () => {
       .get(/v1\/reverse/)
       .reply(200, mockReverseResult)
 
-    const result = await geocoder.reverse({apiKey: mockKey, format: true, point: reverseQuery})
+    const result = await geocoder.reverse({
+      apiKey: mockKey,
+      format: true,
+      point: reverseQuery
+    })
     expect(result).toMatchSnapshot()
     expect(result[0].address).toEqual('Takoma, Takoma Park, MD, USA')
   })
