@@ -12,7 +12,7 @@
     "lint-docs": "documentation lint index.ts",
     "prepublish": "yarn build",
     "semantic-release": "semantic-release",
-    "test": "yarn run lint && yarn run lint-docs && tsdx test",
+    "test": "yarn run lint && yarn run lint-docs && yarn run test-node",
     "test-node": "tsdx test --test-environment node"
   },
   "standard": {
