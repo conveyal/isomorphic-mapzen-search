@@ -3,3 +3,4 @@ tmp
 __tests__
 coverage
 yarn.lock
+.github

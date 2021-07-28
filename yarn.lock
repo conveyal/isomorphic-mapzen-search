@@ -1003,8 +1003,10 @@
   dependencies:
     chalk "^4.0.0"
 
-"@conveyal/lonlat@../lonlat":
-  version "0.0.0-development"
+"@conveyal/lonlat@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@conveyal/lonlat/-/lonlat-1.4.1.tgz#9970f33a2dc810ac08e89c844901405f18da478b"
+  integrity sha512-Z4W1NmvDsnkylhPMDWCk7kLaAjRtA9BVixASFxDPVkQwAiceOxaLEo4UVbZys4jNFzdtbcZ1UVPr6SQHBmEsrA==
 
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"

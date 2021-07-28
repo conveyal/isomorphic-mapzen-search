@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/conveyal/isomorphic-mapzen-search",
   "dependencies": {
-    "@conveyal/lonlat": "../lonlat",
+    "@conveyal/lonlat": "^1.4.1",
     "isomorphic-fetch": "^3.0.0",
     "qs": "^6.3.0",
     "tsdx": "https://github.com/ibi-group/tsdx"
