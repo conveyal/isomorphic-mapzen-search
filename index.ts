@@ -27,10 +27,9 @@ type Boundary = {
   rect: Rect
 }
 
-// apiKey is renamed depending on if it is being passed around or into fetch
-
 type Query = {
-  // Can be disabled as it is a hack to conform with api
+  // apiKey is renamed depending on if it is being passed around or into fetch
+  // OK to disable this rule as api_key is a hack to conform with api
   // eslint-disable-next-line camelcase
   api_key: string
   apiKey?: string
@@ -38,7 +37,7 @@ type Query = {
   focusPoint?: LonLatInput
   format?: boolean
   layers?: string
-  options?: RequestInit
+  options?: RequestInit // Built-in Typing
   point?: GeoJSON.Point | LonLatOutput
   size?: number
   sources?: string
@@ -48,7 +47,7 @@ type Query = {
 
 type MapzenInput = {
   format: boolean
-  options: RequestInit
+  options: RequestInit // Built-in Typing
   query: Query
   url: string
 }

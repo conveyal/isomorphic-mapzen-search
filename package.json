@@ -31,8 +31,7 @@
   "dependencies": {
     "@conveyal/lonlat": "^1.4.1",
     "isomorphic-fetch": "^3.0.0",
-    "qs": "^6.3.0",
-    "tsdx": "https://github.com/ibi-group/tsdx"
+    "qs": "^6.3.0"
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.8",
@@ -41,7 +40,8 @@
     "@types/qs": "^6.9.6",
     "documentation": "^13.2.5",
     "nock": "^13.1.1",
-    "semantic-release": "^17.2.3"
+    "semantic-release": "^17.2.3",
+    "tsdx": "https://github.com/ibi-group/tsdx"
   },
   "jest": {
     "testURL": "http://localhost"
