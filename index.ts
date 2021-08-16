@@ -70,7 +70,7 @@ type MapzenInput = {
  * @param {string} [$0.url='https://search.mapzen.com/v1/autocomplete']                       optional URL to override Mapzen autocomplete endpoint
  * @return {Promise}                              A Promise that'll get resolved with the autocomplete result
  */
-export const autocomplete = ({
+export function autocomplete({
   apiKey,
   boundary,
   focusPoint,
@@ -80,7 +80,7 @@ export const autocomplete = ({
   sources = 'gn,oa,osm,wof',
   text,
   url = autocompleteUrl
-}: Query): Promise<Array<JSON>> => {
+}: Query): Promise<Array<JSON>> {
   // build query
   const query: Query = { api_key: apiKey, text }
 
@@ -139,7 +139,7 @@ export const autocomplete = ({
  * @param {string} [$0.url='https://search.mapzen.com/v1/search']                     optional URL to override Mapzen search endpoint
  * @return {Promise}                            A Promise that'll get resolved with search result
  */
-export const search = ({
+export function search({
   apiKey,
   boundary,
   focusPoint,
@@ -149,7 +149,7 @@ export const search = ({
   sources = 'gn,oa,osm,wof',
   text,
   url = searchUrl
-}: Query): Promise<Array<JSON>> => {
+}: Query): Promise<Array<JSON>> {
   if (!text) return Promise.resolve([])
 
   const query: Query = {
@@ -201,13 +201,13 @@ export const search = ({
  * @param {string} [$0.url='https://search.mapzen.com/v1/reverse']                     optional URL to override Mapzen reverse endpoint
  * @return {Promise}                            A Promise that'll get resolved with reverse geocode result
  */
-export const reverse = ({
+export function reverse({
   apiKey,
   format,
   options,
   point,
   url = reverseUrl
-}: Query): Promise<Array<JSON>> => {
+}: Query): Promise<Array<JSON>> {
   const { lat, lon }: LonLatOutput = normalize(point)
   return run({
     format,
