@@ -17,12 +17,7 @@ type Rect = {
   minLat: number
   minLon: number
 }
-type Circle = {
-  centerPoint: number
-  radius: number
-}
 type Boundary = {
-  circle?: Circle
   country: string
   rect: Rect
 }
@@ -106,14 +101,6 @@ export function autocomplete({
       query['boundary.rect.max_lat'] = boundary.rect.maxLat
       query['boundary.rect.max_lon'] = boundary.rect.maxLon
     }
-    /* Circle currently not supported in autocomplete
-    if (boundary.circle) {
-      const {lat, lon} = lonlat(boundary.circle.centerPoint)
-      query['boundary.circle.lat'] = lat
-      query['boundary.circle.lon'] = lon
-      query['boundary.circle.radius'] = boundary.circle.radius
-    }
-    */
   }
 
   return run({
@@ -175,16 +162,6 @@ export function search({
       query['boundary.rect.min_lon'] = boundary.rect.minLon
       query['boundary.rect.max_lat'] = boundary.rect.maxLat
       query['boundary.rect.max_lon'] = boundary.rect.maxLon
-    }
-    if (boundary.circle) {
-      // The lonlat normalize method will not handle the single number
-      // centerPoint correctly. This output may be faulty
-      const { lat, lon }: LonLatOutput = normalize(
-        boundary.circle.centerPoint.toString()
-      )
-      query['boundary.circle.lat'] = lat
-      query['boundary.circle.lon'] = lon
-      query['boundary.circle.radius'] = boundary.circle.radius
     }
   }
 
