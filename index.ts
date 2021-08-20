@@ -45,12 +45,14 @@ type Query = {
   url?: string
 }
 
-type MapzenInput = {
+type PeliasFetchArgs = {
   format: boolean
   options: RequestInit // Built-in Typing
   query: Query
   url: string
 }
+
+type JSONArrayPromise = Promise<Array<JSON>>
 
 /**
  * Search for and address using
@@ -80,7 +82,7 @@ export function autocomplete({
   sources = 'gn,oa,osm,wof',
   text,
   url = autocompleteUrl
-}: Query): Promise<Array<JSON>> {
+}: Query): JSONArrayPromise {
   // build query
   const query: Query = { api_key: apiKey, text }
 
@@ -149,7 +151,7 @@ export function search({
   sources = 'gn,oa,osm,wof',
   text,
   url = searchUrl
-}: Query): Promise<Array<JSON>> {
+}: Query): JSONArrayPromise {
   if (!text) return Promise.resolve([])
 
   const query: Query = {
@@ -175,7 +177,8 @@ export function search({
       query['boundary.rect.max_lon'] = boundary.rect.maxLon
     }
     if (boundary.circle) {
-      // TODO: not sure what to do here... It's clearly wrong
+      // The lonlat normalize method will not handle the single number
+      // centerPoint correctly. This output may be faulty
       const { lat, lon }: LonLatOutput = normalize(
         boundary.circle.centerPoint.toString()
       )
@@ -207,7 +210,7 @@ export function reverse({
   options,
   point,
   url = reverseUrl
-}: Query): Promise<Array<JSON>> {
+}: Query): JSONArrayPromise {
   const { lat, lon }: LonLatOutput = normalize(point)
   return run({
     format,
@@ -230,7 +233,7 @@ function run({
   options,
   query,
   url = searchUrl
-}: MapzenInput): Promise<Array<JSON>> {
+}: PeliasFetchArgs): JSONArrayPromise {
   return fetch(`${url}?${stringify(query)}`, options)
     .then((res) => res.json())
     .then((json) => {
