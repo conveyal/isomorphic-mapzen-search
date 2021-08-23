@@ -29,9 +29,16 @@ node_modules
 
 # built files
 build/*
+dist/*
 
 # Optional npm cache directory
 .npm
 
 # Optional REPL history
 .node_repl_history
+
+# OS X
+.DS_Store
+
+# Handled by TSDX
+.eslintrc.js

@@ -1,16 +1,19 @@
 {
   "name": "isomorphic-mapzen-search",
   "description": "Isomorphic Mapzen search for reuse across our libraries.",
-  "main": "./build/index",
+  "main": "./dist/index",
+  "module": "dist/isomorphic-mapzen-search.esm.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "cover": "mastarm test --coverage --coverage-paths index.js",
-    "generate-docs": "documentation readme index.js --document-exported=true -g --section=API",
-    "lint": "mastarm lint __tests__ index.js --quiet",
-    "lint-docs": "documentation lint index.js",
-    "prepublish": "mastarm prepublish index.js:build/index.js",
+    "build": "tsdx build -i index.ts --target node",
+    "cover": "tsdx test --coverage --coverage-paths index.ts",
+    "generate-docs": "documentation readme index.ts --document-exported=true -g --section=API",
+    "lint": "tsdx lint __tests__ index.ts --quiet",
+    "lint-docs": "documentation lint index.ts",
+    "prepublish": "yarn build",
     "semantic-release": "semantic-release",
-    "test": "yarn run lint && yarn run lint-docs && mastarm test",
-    "test-node": "mastarm test --test-environment node"
+    "test": "yarn run lint && yarn run lint-docs && yarn run test-node",
+    "test-node": "tsdx test --test-environment node"
   },
   "standard": {
     "parser": "babel-eslint"
@@ -26,15 +29,19 @@
   },
   "homepage": "https://github.com/conveyal/isomorphic-mapzen-search",
   "dependencies": {
-    "@conveyal/lonlat": "^1.1.2",
-    "isomorphic-fetch": "^2.2.1",
+    "@conveyal/lonlat": "^1.4.1",
+    "isomorphic-fetch": "^3.0.0",
     "qs": "^6.3.0"
   },
   "devDependencies": {
-    "documentation": "^4.0.0-beta.18",
-    "mastarm": "^4.1.1",
-    "nock": "^9.0.2",
-    "semantic-release": "^17.2.3"
+    "@types/geojson": "^7946.0.8",
+    "@types/leaflet": "^1.7.3",
+    "@types/node-fetch": "^2.5.11",
+    "@types/qs": "^6.9.6",
+    "documentation": "^13.2.5",
+    "nock": "^13.1.1",
+    "semantic-release": "^17.2.3",
+    "tsdx": "https://github.com/ibi-group/tsdx"
   },
   "jest": {
     "testURL": "http://localhost"

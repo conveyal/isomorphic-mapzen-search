@@ -2,5 +2,5 @@
 tmp
 __tests__
 coverage
-.travis.yml
 yarn.lock
+.github
