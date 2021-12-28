@@ -211,7 +211,7 @@ function run({
   query,
   url = searchUrl
 }: PeliasFetchArgs): JSONArrayPromise {
-  return fetch(`${url}?${stringify(query)}`, options)
+  return fetch(`${url}?${stringify(query, {allowDots: true})}`, options)
     .then((res) => res.json())
     .then((json) => {
       let jsonResponse = json
