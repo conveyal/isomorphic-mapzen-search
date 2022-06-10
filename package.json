@@ -40,7 +40,7 @@
     "@types/qs": "^6.9.6",
     "documentation": "^13.2.5",
     "nock": "^13.1.1",
-    "semantic-release": "^17.2.3",
+    "semantic-release": "^19.0.3",
     "tsdx": "https://github.com/ibi-group/tsdx"
   },
   "jest": {
